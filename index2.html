@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Меню кафе</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background:#f4f4f4;
+margin:0;
+padding:20px;
+}
+
+h1{
+text-align:center;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+}
+
+.menu-item{
+background:white;
+border-radius:10px;
+padding:15px;
+margin-bottom:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.controls{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+button{
+border:none;
+background:#2AABEE;
+color:white;
+width:30px;
+height:30px;
+border-radius:6px;
+font-size:18px;
+cursor:pointer;
+}
+
+button.minus{
+background:#ccc;
+color:black;
+}
+
+.cart{
+margin-top:20px;
+background:white;
+border-radius:10px;
+padding:15px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.cart-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:5px;
+}
+
+.total{
+font-weight:bold;
+margin-top:10px;
+}
+
+.order-btn{
+margin-top:15px;
+width:100%;
+height:40px;
+font-size:16px;
+background:#28a745;
+border:none;
+border-radius:8px;
+color:white;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Меню</h1>
+
+<div id="menu"></div>
+
+<div class="cart">
+
+<h2>Корзина</h2>
+
+<div id="cartItems"></div>
+
+<div class="total">
+Итого: <span id="total">0</span> тг
+</div>
+
+<button class="order-btn" onclick="order()">
+Оформить заказ
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const products = [
+{name:"Бургер", price:350, qty:0},
+{name:"Картошка фри", price:200, qty:0},
+{name:"Кока-кола 0.5", price:100, qty:0}
+]
+
+function renderMenu(){
+
+const menu = document.getElementById("menu")
+menu.innerHTML=""
+
+products.forEach((p,i)=>{
+
+menu.innerHTML += `
+<div class="menu-item">
+
+<div>
+<strong>${p.name}</strong><br>
+${p.price} тг
+</div>
+
+<div class="controls">
+
+<button class="minus" onclick="changeQty(${i},-1)">-</button>
+
+<span>${p.qty}</span>
+
+<button onclick="changeQty(${i},1)">+</button>
+
+</div>
+
+</div>
+`
+
+})
+
+renderCart()
+
+}
+
+function changeQty(index,value){
+
+products[index].qty += value
+
+if(products[index].qty < 0){
+products[index].qty = 0
+}
+
+renderMenu()
+
+}
+
+function renderCart(){
+
+const cart = document.getElementById("cartItems")
+cart.innerHTML=""
+
+let total = 0
+
+products.forEach(p=>{
+
+if(p.qty > 0){
+
+const sum = p.qty * p.price
+
+total += sum
+
+cart.innerHTML += `
+<div class="cart-item">
+<span>${p.name} x${p.qty}</span>
+<span>${sum} тг</span>
+</div>
+`
+
+}
+
+})
+
+document.getElementById("total").innerText = total
+
+}
+
+function order(){
+
+let orderList = products
+.filter(p => p.qty > 0)
+.map(p => `${p.name} x${p.qty}`)
+.join("\n")
+
+if(orderList === ""){
+alert("Корзина пустая")
+return
+}
+
+alert("Ваш заказ:\n\n"+orderList)
+
+}
+
+renderMenu()
+
+</script>
+
+</body>
+</html>
